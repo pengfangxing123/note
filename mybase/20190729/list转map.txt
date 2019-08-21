@@ -1,0 +1,59 @@
+1£¬stream Collectors.toMap()
+	static class GroupBrandCateBO{
+		private String version;
+		private String groupCode;
+		private String bb;
+
+		public GroupBrandCateBO(String version, String groupCode, String bb) {
+			this.version = version;
+			this.groupCode = groupCode;
+			this.bb = bb;
+		}
+
+		public String getVersion() {
+			return version;
+		}
+
+		public void setVersion(String version) {
+			this.version = version;
+		}
+
+		public String getGroupCode() {
+			return groupCode;
+		}
+
+		public void setGroupCode(String groupCode) {
+			this.groupCode = groupCode;
+		}
+
+		public String getBb() {
+			return bb;
+		}
+
+		public void setBb(String bb) {
+			this.bb = bb;
+		}
+	}
+
+	public static void main(String[] args) {
+		List<GroupBrandCateBO> list = new ArrayList<>(
+				Arrays.asList(
+						new GroupBrandCateBO("v1", "g1", "b1"),
+						new GroupBrandCateBO("v1", "g2", "b1"),
+						new GroupBrandCateBO("v3", "g3", "b3")
+				)
+		);
+		Map<String, String> map = list.stream().collect(Collectors.toMap(item -> item.getVersion(), item -> item.getGroupCode(), (oldVal, currVal) -> oldVal, LinkedHashMap::new));
+		System.out.println(map.toString());
+		Map<String, String> map0 = list.stream().collect(Collectors.toMap(item -> item.getVersion(), item -> item.getGroupCode(), (oldVal, currVal) -> currVal));
+		System.out.println(map0.getClass());
+		System.out.println(map0.toString());
+		Map<String, List<GroupBrandCateBO>> map2 = list.stream().collect(Collectors.toMap(GroupBrandCateBO::getVersion, item->Lists.newArrayList(item),
+				(List<GroupBrandCateBO> old,List<GroupBrandCateBO> cur)->{
+					old.addAll(cur);
+					return old;
+				}));
+		System.out.println(map2.toString());
+		Map<String, String> map1 = list.stream().collect(Collectors.toMap(GroupBrandCateBO::getVersion, GroupBrandCateBO::getGroupCode));
+		System.out.println(map1.toString());
+	}

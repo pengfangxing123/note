@@ -1,0 +1,57 @@
+	1，stream 中break（list.stream().filter().findFirst();）
+		 Optional<Map<String, Object>> name = list.stream().filter(p -> {
+            			if (p.get("name") != null) {
+               			        System.out.println("1111");
+               			        return true;
+            			}else{
+               			        return false;
+            			}
+        		}).findFirst();
+	
+	2，stream 中continue （return;）
+		  list.forEach(p->{
+            			if (p.get("name")==2)
+               			    return;
+           			System.out.println(p.get("name"));
+        		  });
+	3，遍历list拼接字符串
+		list.stream().reduce(new StringBuilder(), (sb, s) -> sb.append(s).append(','), StringBuilder::append).toString()
+		或者
+		list.stream().collect(Collectors.joining(":"))
+
+	4，对集合内某个字段分组
+		对象：
+		        Map<String, List<ExpressBCollect>> collect = odCurPreTm.stream().collect(Collectors.groupingBy(ExpressBCollect::getTzDiffFlage));
+		Map：
+		       Map<Object, List<Map<String, Object>>> name = list.stream().collect(Collectors.groupingBy(p -> p.get("name")));
+
+	5，map遍历
+		 collect.forEach((key, val)->{
+			System.out.println(key);
+			System.out.println(val);
+        		});
+
+	6，遍历carCapacity 匹配元素的ZoneCodeMaxCapacity等于destZone，然后对destZone赋值
+		String destZone = first.getDestZone();
+                   		Optional<OpsMloDZoneMaxCapacity> maxCapacity= carCapacity.stream().filter(p->destZone.equals(p.getZoneCodeMaxCapacity())).findFirst();
+           		maxCapacity.ifPresent(opsMloDZoneMaxCapacity -> newLineProcess.setDestMaxCar(opsMloDZoneMaxCapacity.getZoneCodeMaxCapacity()))
+
+	7，排序	
+		多个字段排序，每个字段指定排序方式
+		 List<ExpressBCollect> sortCollect = lineCollect.stream()
+				.sorted(Comparator.comparing(ExpressBCollect::getTmCompare,Comparator.reverseOrder()) 							.thenComparing(ExpressBCollect::getBetterNum)
+				.thenComparing(ExpressBCollect::getSameNum)
+                				.thenComparing(ExpressBCollect::getTotalWeight, Comparator.reverseOrder()))
+				.collect(Collectors.toList());
+		多个字段排序，整体指定排序方式（不加.reversed()为正序）
+		finlNewLineProcesses = finlNewLineProcesses.stream().filter(p -> "Y".equals(p.getWhetherMayAdd()))
+                   			 .sorted(Comparator.comparing(OpsBExpressNewLineProcess::getProcessOrWeight).reversed()).collect(Collectors.toList());
+		
+	8，集合求和
+		元素中某个字段
+		long sum = val.stream().mapToLong(ExpressBFinlDealScheme::getTotalNum).sum();
+		元素求和
+		List<Double> carFullLoad=Lists.newArrayList();
+		Double fullLoad = carFullLoad.stream().reduce(Double::sum).get();
+
+	
